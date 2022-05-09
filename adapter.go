@@ -2,6 +2,7 @@ package pgadapter
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"strings"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
-	"github.com/mmcloughlin/meow"
 )
 
 const DefaultTableName = "casbin_rule"
@@ -195,8 +195,14 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 
 func policyID(ptype string, rule []string) string {
 	data := strings.Join(append([]string{ptype}, rule...), ",")
-	sum := meow.Checksum(0, []byte(data))
-	return fmt.Sprintf("%x", sum)
+	h := sha256.New()
+
+	_, err := h.Write([]byte(data))
+	if err != nil {
+		panic(fmt.Errorf("error computing SHA256 hash for policy: %v", err))
+	}
+
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func savePolicyLine(ptype string, rule []string) *CasbinRule {
