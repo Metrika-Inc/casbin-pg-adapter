@@ -1,4 +1,4 @@
-module github.com/casbin/casbin-pg-adapter/v2
+module github.com/Metrika-Inc/casbin-pg-adapter/v2
 
 go 1.14
 
