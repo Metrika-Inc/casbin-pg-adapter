@@ -28,8 +28,9 @@ type CasbinRule struct {
 }
 
 type Filter struct {
-	P []string
-	G []string
+	P  []string
+	G  []string
+	G2 []string
 }
 
 // Adapter represents the github.com/go-pg/pg adapter for policy storage.
@@ -437,6 +438,23 @@ func (a *Adapter) loadFilteredPolicy(model model.Model, filter *Filter, handler 
 		lines := []*CasbinRule{}
 
 		query := a.db.Model(&lines).Table(a.tableName).Where("ptype = 'g'")
+		query, err := buildQuery(query, filter.G)
+		if err != nil {
+			return err
+		}
+		err = query.Select()
+		if err != nil {
+			return err
+		}
+
+		for _, line := range lines {
+			handler(line.String(), model)
+		}
+	}
+	if filter.G2 != nil {
+		lines := []*CasbinRule{}
+
+		query := a.db.Model(&lines).Table(a.tableName).Where("ptype = 'g2'")
 		query, err := buildQuery(query, filter.G)
 		if err != nil {
 			return err
