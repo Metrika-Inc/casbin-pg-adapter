@@ -455,7 +455,7 @@ func (a *Adapter) loadFilteredPolicy(model model.Model, filter *Filter, handler 
 		lines := []*CasbinRule{}
 
 		query := a.db.Model(&lines).Table(a.tableName).Where("ptype = 'g2'")
-		query, err := buildQuery(query, filter.G)
+		query, err := buildQuery(query, filter.G2)
 		if err != nil {
 			return err
 		}
