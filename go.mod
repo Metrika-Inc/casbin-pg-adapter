@@ -1,6 +1,6 @@
 module github.com/Metrika-Inc/casbin-pg-adapter/v2
 
-go 1.22
+go 1.23.5
 
 require (
 	github.com/casbin/casbin/v2 v2.63.0
